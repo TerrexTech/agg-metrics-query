@@ -19,9 +19,9 @@ cur_attempts=0
 ping_cassandra
 while (( res != 0 && ++cur_attempts != max_attempts ))
 do
-  ping_cassandra
   echo Attempt: $cur_attempts of $max_attempts
   sleep 1
+  ping_cassandra
 done
 
 if (( cur_attempts == max_attempts )); then
