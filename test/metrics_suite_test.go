@@ -93,6 +93,7 @@ var _ = Describe("MetricsAggregate", func() {
 			MetricID:      metricID,
 			ItemID:        itemID,
 			DeviceID:      deviceID,
+			SKU:           "test-sku",
 			Timestamp:     timestamp,
 			TempIn:        23.5,
 			Humidity:      45,
@@ -110,13 +111,13 @@ var _ = Describe("MetricsAggregate", func() {
 		timeUUID, err := uuuid.NewV1()
 		Expect(err).ToNot(HaveOccurred())
 		mockEvent = &model.Event{
-			Action:        "insert",
+			EventAction:   "insert",
 			CorrelationID: cid,
 			AggregateID:   metrics.AggregateID,
 			Data:          marshalMetrics,
-			Timestamp:     time.Now(),
+			NanoTime:      time.Now().UnixNano(),
 			UserUUID:      uid,
-			TimeUUID:      timeUUID,
+			UUID:          timeUUID,
 			Version:       0,
 			YearBucket:    2018,
 		}
@@ -143,10 +144,10 @@ var _ = Describe("MetricsAggregate", func() {
 			Byf("Creating query MockEvent")
 			timeUUID, err := uuuid.NewV1()
 			Expect(err).ToNot(HaveOccurred())
-			mockEvent.Action = "query"
+			mockEvent.EventAction = "query"
 			mockEvent.Data = marshalQuery
-			mockEvent.Timestamp = time.Now()
-			mockEvent.TimeUUID = timeUUID
+			mockEvent.NanoTime = time.Now().UnixNano()
+			mockEvent.UUID = timeUUID
 
 			Byf("Producing MockEvent")
 			p, err = kafka.NewProducer(&kafka.ProducerConfig{
@@ -170,11 +171,11 @@ var _ = Describe("MetricsAggregate", func() {
 				err := json.Unmarshal(msg.Value, kr)
 				Expect(err).ToNot(HaveOccurred())
 
-				if kr.UUID == mockEvent.TimeUUID {
+				if kr.UUID == mockEvent.UUID {
 					Expect(kr.Error).To(BeEmpty())
 					Expect(kr.ErrorCode).To(BeZero())
 					Expect(kr.CorrelationID).To(Equal(mockEvent.CorrelationID))
-					Expect(kr.UUID).To(Equal(mockEvent.TimeUUID))
+					Expect(kr.UUID).To(Equal(mockEvent.UUID))
 
 					result := []metrics.Metric{}
 					err = json.Unmarshal(kr.Result, &result)

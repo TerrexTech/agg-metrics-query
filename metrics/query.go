@@ -22,7 +22,7 @@ func Query(collection *mongo.Collection, event *model.Event) *model.KafkaRespons
 			CorrelationID: event.CorrelationID,
 			Error:         err.Error(),
 			ErrorCode:     InternalError,
-			UUID:          event.TimeUUID,
+			UUID:          event.UUID,
 		}
 	}
 
@@ -35,7 +35,7 @@ func Query(collection *mongo.Collection, event *model.Event) *model.KafkaRespons
 			CorrelationID: event.CorrelationID,
 			Error:         err.Error(),
 			ErrorCode:     InternalError,
-			UUID:          event.TimeUUID,
+			UUID:          event.UUID,
 		}
 	}
 
@@ -48,7 +48,7 @@ func Query(collection *mongo.Collection, event *model.Event) *model.KafkaRespons
 			CorrelationID: event.CorrelationID,
 			Error:         err.Error(),
 			ErrorCode:     DatabaseError,
-			UUID:          event.TimeUUID,
+			UUID:          event.UUID,
 		}
 	}
 
@@ -61,7 +61,7 @@ func Query(collection *mongo.Collection, event *model.Event) *model.KafkaRespons
 			CorrelationID: event.CorrelationID,
 			Error:         err.Error(),
 			ErrorCode:     InternalError,
-			UUID:          event.TimeUUID,
+			UUID:          event.UUID,
 		}
 	}
 
@@ -69,6 +69,6 @@ func Query(collection *mongo.Collection, event *model.Event) *model.KafkaRespons
 		AggregateID:   event.AggregateID,
 		CorrelationID: event.CorrelationID,
 		Result:        resultMarshal,
-		UUID:          event.TimeUUID,
+		UUID:          event.UUID,
 	}
 }
